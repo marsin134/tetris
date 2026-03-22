@@ -21,6 +21,13 @@ INDENT_HEIGHT = COUNTER_PANEL_HEIGHT
 
 BLOCK_FRAME_COLOR = "#06262f"
 RED_BLOCK = "red"
+CYAN_BLOCK = "cyan"
+YELLOW_BLOCK = "yellow"
+PURPLE_BLOCK = "purple"
+ORANGE_BLOCK = "orange"
+BLUE_BLOCK = "blue"
+GREEN_BLOCK = "green"
+
 BLOCK_SIZE = GAME_FRAME_WIDTH // 10
 
 SCREEN = pg.display.set_mode(SIZE)
