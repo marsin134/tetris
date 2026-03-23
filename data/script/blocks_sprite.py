@@ -27,16 +27,17 @@ map_block = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 
 hash_block_color = {0: constants.BLOCK_FRAME_COLOR,
                     1: constants.CYAN_BLOCK,
-                    2: constants.YELLOW_BLOCK,
-                    3: constants.PURPLE_BLOCK,
-                    4: constants.ORANGE_BLOCK,
-                    5: constants.BLUE_BLOCK,
-                    6: constants.GREEN_BLOCK,
-                    7: constants.RED_BLOCK}
+                    2: constants.CYAN_BLOCK,
+                    3: constants.YELLOW_BLOCK,
+                    4: constants.PURPLE_BLOCK,
+                    5: constants.ORANGE_BLOCK,
+                    6: constants.BLUE_BLOCK,
+                    7: constants.GREEN_BLOCK,
+                    8: constants.RED_BLOCK, }
 
 hash_block_cords = {
     # I-shape (Cyan)
-    1: [
+    2: [
         [[0, 0], [0, 1], [0, 2], [0, 3]],  # Horizontal
         [[0, 0], [1, 0], [2, 0], [3, 0]],  # Vertical
         [[0, 0], [0, 1], [0, 2], [0, 3]],  # Horizontal (same as 0°)
@@ -44,7 +45,7 @@ hash_block_cords = {
     ],
 
     # O-shape (Yellow)
-    2: [
+    3: [
         [[0, 0], [0, 1], [1, 0], [1, 1]],  # Square (all rotations same)
         [[0, 0], [0, 1], [1, 0], [1, 1]],
         [[0, 0], [0, 1], [1, 0], [1, 1]],
@@ -52,7 +53,7 @@ hash_block_cords = {
     ],
 
     # T-shape (Purple)
-    3: [
+    4: [
         [[0, 1], [1, 0], [1, 1], [1, 2]],  # 0°
         [[0, 1], [1, 1], [2, 1], [1, 2]],  # 90°
         [[1, 0], [1, 1], [1, 2], [2, 1]],  # 180°
@@ -60,7 +61,7 @@ hash_block_cords = {
     ],
 
     # L-shape (Orange)
-    4: [
+    5: [
         [[0, 0], [0, 1], [0, 2], [1, 2]],  # 0°
         [[0, 1], [1, 1], [2, 1], [2, 0]],  # 90°
         [[0, 0], [1, 0], [1, 1], [1, 2]],  # 180°
@@ -68,7 +69,7 @@ hash_block_cords = {
     ],
 
     # J-shape (Blue)
-    5: [
+    6: [
         [[0, 0], [1, 0], [0, 1], [0, 2]],  # 0°
         [[0, 1], [0, 2], [1, 2], [2, 2]],  # 90°
         [[0, 2], [1, 0], [1, 1], [1, 2]],  # 180°
@@ -76,7 +77,7 @@ hash_block_cords = {
     ],
 
     # S-shape (Green)
-    6: [
+    7: [
         [[0, 1], [0, 2], [1, 0], [1, 1]],  # 0°
         [[0, 0], [1, 0], [1, 1], [2, 1]],  # 90°
         [[0, 1], [0, 2], [1, 0], [1, 1]],  # 180° (same as 0°)
@@ -84,7 +85,7 @@ hash_block_cords = {
     ],
 
     # Z-shape (Red)
-    7: [
+    8: [
         [[0, 0], [0, 1], [1, 1], [1, 2]],  # 0°
         [[0, 1], [1, 0], [1, 1], [2, 0]],  # 90°
         [[0, 0], [0, 1], [1, 1], [1, 2]],  # 180° (same as 0°)
@@ -114,16 +115,18 @@ class Block:
         width_index = (self.rect[0] - constants.INDENT_WIDTH) // constants.BLOCK_SIZE
         index_block = map_block[height_index][width_index]
         self.color = hash_block_color[index_block]
-        self.width_frame = 1 if index_block == 0 else 0
+        self.width_frame = 1 if index_block <= 1 else 0
 
 
 class Figure:
-    def __init__(self):
-        self.block_type = randint(1, 7)
+    def __init__(self, block_type):
+        self.block_type = block_type
         self.rotate_index = 0
         self.x = 4
         self.y = 0
         self.can_move = True
+        self.stop_figure = False
+        self.cords_block_shadow = []
 
         self.shapes = deepcopy(hash_block_cords[self.block_type])
         self.update_shape_positions()
@@ -163,9 +166,18 @@ class Figure:
                 return True
 
             # Check collision with other blocks (excluding current figure)
-            if block[0] >= 0 and map_block[block[0]][block[1]] != 0 and block not in self.blocks:
+            if block[0] >= 0 and map_block[block[0]][block[1]] > 1 and block not in self.blocks:
                 return True
         return False
+
+    def block_shadow(self):
+        shap = deepcopy(self.blocks)
+        while not self.check_collision(shap):
+            for block in shap:
+                block[0] += 1
+        self.cords_block_shadow = []
+        for block in shap:
+            self.cords_block_shadow.append([block[0] - 1, block[1]])
 
     def clear_from_map(self):
         """Remove current figure from map"""
@@ -174,9 +186,14 @@ class Figure:
                     0 <= block[1] < len(map_block[0]) and
                     map_block[block[0]][block[1]] == self.block_type):
                 map_block[block[0]][block[1]] = 0
+        for block in self.cords_block_shadow:
+            map_block[block[0]][block[1]] = 0
 
     def draw_on_map(self):
         """Draw current figure on map"""
+        for block in self.cords_block_shadow:
+            map_block[block[0]][block[1]] = 1
+
         for block in self.blocks:
             if 0 <= block[0] < len(map_block):
                 map_block[block[0]][block[1]] = self.block_type
@@ -184,6 +201,7 @@ class Figure:
     def update_map(self):
         """Update figure position on map"""
         self.clear_from_map()
+        self.block_shadow()
         self.blocks = self.get_blocks()
 
         # Check if figure can move down
@@ -208,13 +226,18 @@ class Figure:
     def move_left(self):
         """Move figure left"""
         self.try_move(dx=-1)
+        self.update_map()
 
     def move_right(self):
         """Move figure right"""
         self.try_move(dx=1)
+        self.update_map()
 
     def move_down(self):
         """Move figure down, return False if stuck"""
+        if not self.can_move:
+            self.stop_figure = True
+
         return self.try_move(dy=1)
 
     def rotate(self):
@@ -229,3 +252,41 @@ class Figure:
             self.update_shape_positions()
             self.blocks = new_blocks
             self.draw_on_map()
+
+        self.update_map()
+
+
+def clear_line(y_line: int) -> None:
+    # Clearing the specified line
+    for i in range(len(map_block[0])):
+        map_block[y_line][i] = 0
+
+    # Move all the blocks above one down
+    for y in range(y_line, 0, -1):
+        for x in range(len(map_block[0])):
+            map_block[y][x] = map_block[y - 1][x]
+
+    # Clear the top row (the very first one)
+    for x in range(len(map_block[0])):
+        map_block[0][x] = 0
+
+
+def scoring_points() -> int:
+    count_lines = 0
+    for y in range(len(map_block)):
+        if 0 not in map_block[y]:
+            count_lines += 1
+            clear_line(y)
+
+    return count_lines
+
+
+def rect_figure(cords: (), block_type: int, screen: pg.display):
+    blocks_rect = []
+    for block in sorted(hash_block_cords[block_type][0]):
+        blocks_rect.append(pg.Rect(cords[0] + (block[1] + 1) * constants.BLOCK_SIZE,
+                                   cords[1] + (block[0] + 1) * constants.BLOCK_SIZE,
+                                   constants.BLOCK_SIZE,
+                                   constants.BLOCK_SIZE))
+    for rect in blocks_rect:
+        pg.draw.rect(screen, hash_block_color[block_type], rect, width=0)

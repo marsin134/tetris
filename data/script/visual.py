@@ -22,13 +22,26 @@ for height in range(frame[1] + constants.WIDTH_GAME_FRAME, frame[3] + frame[1] -
     blocks.append(line)
 
 
-def field_rendering(screen: pg.display):
+def field_rendering(screen: pg.display, points: int, level: int, lines: int, next_figure_type: int):
+    text_points = constants.TEXT_FONT.render(str(points), True, (255, 255, 255))
+    text_level = constants.TEXT_FONT.render(str(level + 1), True, (255, 255, 255))
+    text_lines = constants.TEXT_FONT.render(str(lines), True, (255, 255, 255))
+
     screen.fill(constants.SCREEN_FILL)
     pg.draw.rect(screen, constants.GAME_FRAME, frame, width=constants.WIDTH_GAME_FRAME)
-    screen.blit(panel, (0, 0))
+    # screen.blit(panel, (0, 0))
 
     for lines in blocks:
         for block in lines:
             block.update()
             block.draw(screen)
 
+    screen.blit(constants.TEXT_SCORE, (constants.WIDTH_TEXT, constants.INDENT_HEIGHT))
+    screen.blit(constants.TEXT_LEVEL, (constants.WIDTH_TEXT, constants.INDENT_HEIGHT * 5.5))
+    screen.blit(constants.TEXT_LINES, (constants.WIDTH_TEXT, constants.INDENT_HEIGHT * 10))
+    screen.blit(constants.TEXT_NEXT, (constants.WIDTH_TEXT, constants.INDENT_HEIGHT * 15))
+    screen.blit(text_points, (constants.WIDTH_TEXT, constants.INDENT_HEIGHT * 3))
+    screen.blit(text_level, (constants.WIDTH_TEXT, constants.INDENT_HEIGHT * 7.5))
+    screen.blit(text_lines, (constants.WIDTH_TEXT, constants.INDENT_HEIGHT * 12))
+
+    blocks_sprite.rect_figure((constants.WIDTH_FIGURE_NEXT, constants.INDENT_HEIGHT * 17), next_figure_type, screen)
