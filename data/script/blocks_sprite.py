@@ -295,3 +295,9 @@ def calculating_speed_index(points: int) -> int:
         return 9
 
     return points // 300
+
+
+def clear_map():
+    for i in range(len(map_block)):
+        for j in range(len(map_block[i])):
+            map_block[i][j] = 0

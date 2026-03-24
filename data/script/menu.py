@@ -2,15 +2,15 @@ import pygame as pg
 from . import visual
 from . import constants
 
-image_buttons = visual.load_image('button.png', transforms=constants.BUTTON_SIZE)
-
 
 class Button(pg.sprite.Sprite):
 
     def __init__(self, pos, text, shift, font_normal=constants.TEXT_FONT_BUTTON.render,
-                 font_min_text=constants.TEXT_FONT_BUTTON_MIN.render, color='black'):
+                 font_min_text=constants.TEXT_FONT_BUTTON_MIN.render, color='black', size_button=constants.BUTTON_SIZE):
         pg.sprite.Sprite.__init__(self)
-        self.image = image_buttons
+
+        self.image = visual.load_image('button.png', transforms=size_button)
+
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
@@ -43,7 +43,7 @@ def menu(screen: pg.display):
 
             if event.type == pg.MOUSEBUTTONUP:
                 # if you click on the start button, we start the game
-                if start.rect.collidepoint(event.pos):
+                if start_button.rect.collidepoint(event.pos):
                     return True
 
                 # if you click on the exit button, we end the game
@@ -59,8 +59,6 @@ def menu(screen: pg.display):
         pg.display.flip()
 
 
-button_group_menu = pg.sprite.Group()
-
 # music_click = pygame.mixer.Sound('data/music/data_music_click_m.wav')
 # music_fon_menu = pygame.mixer.Sound('data/music/Oklou_Casey_MQ_-_Lurk.mp3')
 # music_hooked = pygame.mixer.Sound('data/music/data_music_hooked_m.wav')
@@ -69,8 +67,8 @@ button_group_menu = pg.sprite.Group()
 # fon = pygame.transform.scale(visual.load_image('fons/fon_menu.png'), (CONST.SCREEN_WIDTH, CONST.SCREEN_HEIGHT))
 
 # create button
-start = Button(constants.CORDS_START_BUTTON,
-               'Play', (100, 20))
+start_button = Button(constants.CORDS_START_BUTTON,
+                      'Play', (100, 20))
 
 statistics_button = Button(constants.CORDS_STATISTICS_BUTTON,
                            'Statistics', (37, 17))
@@ -78,19 +76,30 @@ statistics_button = Button(constants.CORDS_STATISTICS_BUTTON,
 exit_in_menu = Button(constants.CORDS_EXIT_BUTTON,
                       'Exit', (100, 20))
 
-exit_in_pause = Button(constants.CORDS_PAUSE_BUTTON,
-                       'Exit in menu', (95, 20))
+return_button_in_pause = Button(constants.CORDS_RETURN_BUTTON,
+                                "Return game", (20, 15), size_button=constants.BUTTON_SIZE_PAUSE,
+                                font_normal=constants.TEXT_FONT_PAUSE.render,
+                                font_min_text=constants.TEXT_FONT_PAUSE_MIN.render)
+
+exit_in_pause = Button(constants.CORDS_EXIT_IN_MENU_BUTTON,
+                       'Exit in menu', (22, 15), size_button=constants.BUTTON_SIZE_PAUSE,
+                       font_normal=constants.TEXT_FONT_PAUSE.render, font_min_text=constants.TEXT_FONT_PAUSE_MIN.render)
 
 # create inscriptions
 name_game_text = constants.BIG_TEXT_FONT.render('Tetris', True, (255, 255, 255))
 name_game_text.set_alpha(200)
-
 pause_text = constants.BIG_TEXT_FONT.render('Pause', True, (255, 255, 255))
 
-button_in_menu = [start, statistics_button, exit_in_menu]
+button_in_menu = [start_button, statistics_button, exit_in_menu]
+button_in_pause = [return_button_in_pause, exit_in_pause]
 
-for one_button in button_in_menu:
-    button_group_menu.add(one_button)
+button_group_menu = pg.sprite.Group()
+button_group_pause = pg.sprite.Group()
+
+for button in button_in_menu:
+    button_group_menu.add(button)
+for button in button_in_pause:
+    button_group_pause.add(button)
 
 # purchase_sound = pygame.mixer.Sound('data/music/buyTrue.mp3')
 # purchase_cancelled_sound = pygame.mixer.Sound('data/music/buyFalse.mp3')
