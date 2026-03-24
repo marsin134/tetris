@@ -1,6 +1,5 @@
 import pygame as pg
-from . import visual
-from . import constants
+from . import visual, constants
 
 
 class Button(pg.sprite.Sprite):
@@ -85,6 +84,31 @@ exit_in_pause = Button(constants.CORDS_EXIT_IN_MENU_BUTTON,
                        'Exit in menu', (22, 15), size_button=constants.BUTTON_SIZE_PAUSE,
                        font_normal=constants.TEXT_FONT_PAUSE.render, font_min_text=constants.TEXT_FONT_PAUSE_MIN.render)
 
+button_left = Button(constants.CORDS_BUTTON_LEFT,
+                     '←', (11, 3), size_button=constants.BUTTON_CONTROL_SIZE,
+                     font_normal=constants.TEXT_FONT_CONTROL.render,
+                     font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+
+button_down = Button(constants.CORDS_BUTTON_DOWN,
+                     '↓', (25, 0), size_button=constants.BUTTON_CONTROL_SIZE,
+                     font_normal=constants.TEXT_FONT_CONTROL.render,
+                     font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+
+button_right = Button(constants.CORDS_BUTTON_RIGHT,
+                      '→', (11, 3), size_button=constants.BUTTON_CONTROL_SIZE,
+                      font_normal=constants.TEXT_FONT_CONTROL.render,
+                      font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+
+button_rotate = Button(constants.CORDS_BUTTON_ROTATE,
+                       'r', (30, 5), size_button=constants.BUTTON_CONTROL_SIZE,
+                       font_normal=constants.TEXT_FONT_CONTROL.render,
+                       font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+
+button_pause = Button(constants.CORDS_BUTTON_PAUSE,
+                      '||', (27, 1), size_button=constants.BUTTON_CONTROL_SIZE,
+                      font_normal=constants.TEXT_FONT_CONTROL.render,
+                      font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+
 # create inscriptions
 name_game_text = constants.BIG_TEXT_FONT.render('Tetris', True, (255, 255, 255))
 name_game_text.set_alpha(200)
@@ -92,14 +116,18 @@ pause_text = constants.BIG_TEXT_FONT.render('Pause', True, (255, 255, 255))
 
 button_in_menu = [start_button, statistics_button, exit_in_menu]
 button_in_pause = [return_button_in_pause, exit_in_pause]
+button_control = [button_left, button_down, button_right, button_rotate, button_pause]
 
 button_group_menu = pg.sprite.Group()
 button_group_pause = pg.sprite.Group()
+button_group_control = pg.sprite.Group()
 
 for button in button_in_menu:
     button_group_menu.add(button)
 for button in button_in_pause:
     button_group_pause.add(button)
+for button in button_control:
+    button_group_control.add(button)
 
 # purchase_sound = pygame.mixer.Sound('data/music/buyTrue.mp3')
 # purchase_cancelled_sound = pygame.mixer.Sound('data/music/buyFalse.mp3')

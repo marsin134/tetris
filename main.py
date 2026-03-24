@@ -26,7 +26,7 @@ def game(screen: pg.display):
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                return
+                return False
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     pause = not pause
@@ -45,14 +45,23 @@ def game(screen: pg.display):
                     if event.key == pg.K_RIGHT:
                         figure.move_right()
 
-            if pause and event.type == pg.MOUSEBUTTONUP:
-                # if you click on the start button, we start the game
-                if menu.return_button_in_pause.rect.collidepoint(event.pos):
-                    pause = False
-
-                # if you click on the exit button, we end the game
-                elif menu.exit_in_pause.rect.collidepoint(event.pos):
-                    return
+            if event.type == pg.MOUSEBUTTONUP:
+                if not pause:
+                    if menu.button_left.rect.collidepoint(event.pos):
+                        figure.move_left()
+                    elif menu.button_down.rect.collidepoint(event.pos):
+                        figure.move_down()
+                    elif menu.button_right.rect.collidepoint(event.pos):
+                        figure.move_right()
+                    elif menu.button_rotate.rect.collidepoint(event.pos):
+                        figure.rotate()
+                    elif menu.button_pause.rect.collidepoint(event.pos):
+                        pause = True
+                else:
+                    if menu.return_button_in_pause.rect.collidepoint(event.pos):
+                        pause = False
+                    elif menu.exit_in_pause.rect.collidepoint(event.pos):
+                        return True
 
         visual.field_rendering(screen, points, speed_index, lines, block_type)
 
@@ -71,6 +80,8 @@ def game(screen: pg.display):
                 figure = blocks_sprite.Figure(block_type)
                 block_type = randint(2, 8)
 
+            menu.button_group_control.update(screen)
+
         if pause:
             screen.blit(visual.image_grey, (0, 0))
             screen.blit(menu.pause_text, constants.CORDS_TEXT_PAUSE)
@@ -83,5 +94,6 @@ def game(screen: pg.display):
 
 running = menu.menu(screen)
 while running:
-    game(screen)
-    running = menu.menu(screen)
+    running = exit_in_menu_flag = game(screen)
+    if exit_in_menu_flag:
+        running = menu.menu(screen)
