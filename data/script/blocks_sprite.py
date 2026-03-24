@@ -1,9 +1,7 @@
 import pygame as pg
-from random import randint
 from . import constants
 from copy import deepcopy
 
-# blocks = image_func.cut_sheet("sprites.png", 7)
 map_block = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -290,3 +288,10 @@ def rect_figure(cords: (), block_type: int, screen: pg.display):
                                    constants.BLOCK_SIZE))
     for rect in blocks_rect:
         pg.draw.rect(screen, hash_block_color[block_type], rect, width=0)
+
+
+def calculating_speed_index(points: int) -> int:
+    if points >= 2700:
+        return 9
+
+    return points // 300

@@ -10,8 +10,6 @@ frame = pg.Rect(constants.INDENT_WIDTH,
                 constants.GAME_FRAME_WIDTH + constants.WIDTH_GAME_FRAME * 2,
                 constants.GAME_FRAME_HEIGHT + constants.WIDTH_GAME_FRAME * 2)
 
-panel = load_image("panel.png", transforms=(constants.WIDTH, constants.COUNTER_PANEL_HEIGHT))
-
 blocks = []
 for height in range(frame[1] + constants.WIDTH_GAME_FRAME, frame[3] + frame[1] - constants.WIDTH_GAME_FRAME,
                     constants.BLOCK_SIZE):  # 20 cells wide
@@ -21,6 +19,11 @@ for height in range(frame[1] + constants.WIDTH_GAME_FRAME, frame[3] + frame[1] -
         line.append(blocks_sprite.Block((width, height)))
     blocks.append(line)
 
+image_grey = pg.Surface((constants.WIDTH, constants.HEIGHT))
+image_grey.fill((128, 128, 128))
+image_grey.set_colorkey((0, 0, 0))
+image_grey.set_alpha(100)
+
 
 def field_rendering(screen: pg.display, points: int, level: int, lines: int, next_figure_type: int):
     text_points = constants.TEXT_FONT.render(str(points), True, (255, 255, 255))
@@ -29,7 +32,6 @@ def field_rendering(screen: pg.display, points: int, level: int, lines: int, nex
 
     screen.fill(constants.SCREEN_FILL)
     pg.draw.rect(screen, constants.GAME_FRAME, frame, width=constants.WIDTH_GAME_FRAME)
-    # screen.blit(panel, (0, 0))
 
     for lines in blocks:
         for block in lines:

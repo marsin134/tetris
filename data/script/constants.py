@@ -57,7 +57,20 @@ DICT_SPEED = {0: 0.8 * TIME_SECOND,
               9: 0.1 * TIME_SECOND}
 
 TEXT_FONT = pg.font.SysFont('arial', 36)
+BIG_TEXT_FONT = pg.font.SysFont('arial', 90)
+# TEXT_FONT_BUTTON_STATISTICS = pg.font.SysFont('arial', 70)
+TEXT_FONT_BUTTON = pg.font.SysFont('arial', 70)
+TEXT_FONT_BUTTON_MIN = pg.font.SysFont('arial', 67)
 TEXT_SCORE = TEXT_FONT.render("SCORE", True, (255, 255, 255))
 TEXT_LINES = TEXT_FONT.render("LINES", True, (255, 255, 255))
 TEXT_LEVEL = TEXT_FONT.render("LEVEL", True, (255, 255, 255))
 TEXT_NEXT = TEXT_FONT.render("NEXT", True, (255, 255, 255))
+
+CORDS_TEXT_TETRIS = (WIDTH // 3, 100)
+CORDS_TEXT_PAUSE = (75, 250)
+
+BUTTON_SIZE = (300, 125)
+CORDS_START_BUTTON = (100, 300)
+CORDS_STATISTICS_BUTTON = (100, 450)
+CORDS_EXIT_BUTTON = (100, 600)
+CORDS_PAUSE_BUTTON = (100, 100)
