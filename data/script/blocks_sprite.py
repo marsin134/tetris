@@ -1,6 +1,23 @@
 import pygame as pg
 from . import constants
 from copy import deepcopy
+import ctypes
+import os
+
+# Загрузка DLL
+dll_path = os.path.join(os.path.dirname(__file__), "asm", "clear_map.dll")
+dll = ctypes.CDLL(dll_path)
+
+# Указание типов аргументов и возвращаемого значения для каждой функции
+dll.clear_map.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int]
+dll.clear_map.restype = None
+
+dll.update_shape_positions.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int, ctypes.c_int]
+dll.update_shape_positions.restype = None
+
+# Указываем типы аргументов и возвращаемого значения для функции scoring_points_asm
+dll.scoring_points.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
+dll.scoring_points.restype = ctypes.c_int  # Указываем тип возвращаемого значения как int
 
 map_block = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -138,11 +155,24 @@ class Figure:
         self.update_map()
 
     def update_shape_positions(self):
-        """Update all shape rotations positions relative to current coordinates"""
+        flat = []
+
         for rotation in self.shapes:
             for block in rotation:
-                block[0] = self.y + block[0]
-                block[1] = self.x + block[1]
+                flat.append(block[0])
+                flat.append(block[1])
+
+        count = len(flat) // 2
+        arr = (ctypes.c_int * len(flat))(*flat)
+
+        dll.update_shape_positions(arr, count, self.y, self.x)
+
+        k = 0
+        for rotation in self.shapes:
+            for block in rotation:
+                block[0] = arr[k]
+                block[1] = arr[k + 1]
+                k += 2
 
     def get_blocks(self, rot_index=None, x=None, y=None):
         """Get blocks at specified position and rotation"""
@@ -269,10 +299,15 @@ def clear_line(y_line: int) -> None:
         map_block[0][x] = 0
 
 
-def scoring_points() -> int:
+def scoring_points():
     count_lines = 0
     for y in range(len(map_block)):
-        if 0 not in map_block[y]:
+        # Преобразуем строку map_block[y] в массив ctypes
+        result = dll.scoring_points(
+            (ctypes.c_int * len(map_block[y]))(*map_block[y]), len(map_block[y])
+        )
+
+        if result == 1:  # если строка не содержит нулей
             count_lines += 1
             clear_line(y)
 
@@ -298,6 +333,16 @@ def calculating_speed_index(points: int) -> int:
 
 
 def clear_map():
-    for i in range(len(map_block)):
-        for j in range(len(map_block[i])):
-            map_block[i][j] = 0
+    rows = len(map_block)
+    cols = len(map_block[0])
+
+    flat = [cell for row in map_block for cell in row]
+    arr = (ctypes.c_int * len(flat))(*flat)
+
+    dll.clear_map(arr, rows, cols)
+
+    k = 0
+    for i in range(rows):
+        for j in range(cols):
+            map_block[i][j] = arr[k]
+            k += 1
