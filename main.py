@@ -1,5 +1,5 @@
 import pygame as pg
-from data.script import visual, constants, blocks_sprite, menu
+from data.script import visual, constants, blocks_sprite, menu, statistics_window
 from random import randint
 
 clock = pg.time.Clock()
@@ -92,7 +92,7 @@ def game(screen: pg.display):
         clock.tick(constants.FPS)
 
 
-running = menu.menu(screen)
+running = statistics_window.statistics_window(screen)
 while running:
     running = exit_in_menu_flag = game(screen)
     if exit_in_menu_flag:

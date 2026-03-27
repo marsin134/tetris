@@ -2,6 +2,10 @@ import pygame as pg
 
 pg.init()
 
+URL_TXT_FILE = "data/txt/"
+USER_TXT = "last_user.txt"
+STATISTICS_TXT = "statistics.txt"
+
 WIDTH, HEIGHT = SIZE = 500, 800
 CELL_SIZE = 50
 
@@ -65,6 +69,7 @@ TEXT_FONT_PAUSE = pg.font.SysFont('arial', 34)
 TEXT_FONT_PAUSE_MIN = pg.font.SysFont('arial', 33)
 TEXT_FONT_CONTROL = pg.font.SysFont('arial', 52)
 TEXT_FONT_CONTROL_MIN = pg.font.SysFont('arial', 50)
+TEXT_FONT_STATISTICS = pg.font.SysFont("arial", 30)
 
 TEXT_SCORE = TEXT_FONT.render("SCORE", True, (255, 255, 255))
 TEXT_LINES = TEXT_FONT.render("LINES", True, (255, 255, 255))
