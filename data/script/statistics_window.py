@@ -51,17 +51,20 @@ def statistics_window(screen: pg.display):
             if event.type == pg.MOUSEBUTTONUP:
                 # we change the speed using the buttons
                 if button_left.rect.collidepoint(event.pos) and int(user[2]) - 1 >= 1:
+                    constants.MUSIC_CLICK.play()
                     user[2] = str(int(user[2]) - 1)
                     user_speed_text = constants.TEXT_FONT.render(user[2], True, (255, 255, 255))
                     update_user_speed(int(user[2]))
 
                 elif button_right.rect.collidepoint(event.pos) and int(user[2]) + 1 <= 10:
+                    constants.MUSIC_CLICK.play()
                     user[2] = str(int(user[2]) + 1)
                     user_speed_text = constants.TEXT_FONT.render(user[2], True, (255, 255, 255))
                     update_user_speed(int(user[2]))
 
                 # We go out the window
                 elif button_exit.rect.collidepoint(event.pos):
+                    constants.MUSIC_CLICK.play()
                     return
 
                 # If the user clicked on the input_box rect.

@@ -6,6 +6,9 @@ from random import randint
 def game(screen: pg.display):
     """Tetris game function"""
 
+    constants.MUSIC_BACKGROUND.play(-1)
+    pg.mixer.music.set_volume(constants.VOLUME)
+
     # setting the basic values
     blocks_sprite.clear_map()
 
@@ -62,6 +65,7 @@ def game(screen: pg.display):
                     elif menu.exit_in_pause.rect.collidepoint(event.pos):
                         statistics_window.update_user_points(points)
                         statistics_window.write_statistics()
+                        constants.MUSIC_BACKGROUND.stop()
                         return True
 
         # displaying the playing field

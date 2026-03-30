@@ -1,1 +1,9 @@
 name:points
+Andrey:2108
+Alex:1124
+NO_NAME:777
+CAT:555
+DOG:498
+Kid:120
+User:52
+User0:0

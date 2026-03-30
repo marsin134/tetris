@@ -126,3 +126,10 @@ COUNT_MAX_USERS = 8
 INPUT_BOX_RECT = (NAME_CORDS[0] + 120, NAME_CORDS[1] - 2, 125, 32)
 INPUT_BOX_CLOR_INACTIVE = pg.Color('lightskyblue3')
 INPUT_BOX_COLOR_ACTIVE = pg.Color('dodgerblue2')
+
+
+MUSIC_CLICK = pg.mixer.Sound('data/music/data_music_click_m.wav')
+MUSIC_BACKGROUND = pg.mixer.Sound('data/music/music_background.mp3')
+MUSIC_HOOKED = pg.mixer.Sound('data/music/data_music_hooked_m.wav')
+
+VOLUME = 0.2

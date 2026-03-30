@@ -5,7 +5,8 @@ from . import constants, visual
 class Button(pg.sprite.Sprite):
 
     def __init__(self, pos, text, shift, font_normal=constants.TEXT_FONT_BUTTON.render,
-                 font_min_text=constants.TEXT_FONT_BUTTON_MIN.render, color='black', size_button=constants.BUTTON_SIZE):
+                 font_min_text=constants.TEXT_FONT_BUTTON_MIN.render, color='black', size_button=constants.BUTTON_SIZE,
+                 music=True):
         pg.sprite.Sprite.__init__(self)
 
         self.image = visual.load_image('button.png', transforms=size_button)
@@ -20,6 +21,8 @@ class Button(pg.sprite.Sprite):
         self.shift = shift
         self.hovered = False
 
+        self.music_flag = music
+
     def update(self, surface):
         """update button"""
 
@@ -28,10 +31,12 @@ class Button(pg.sprite.Sprite):
         # if the cursor is on the button, change the flag
         if self.rect.collidepoint(pg.mouse.get_pos()) and not self.hovered:
             self.hovered = True
+            if self.music_flag:
+                constants.MUSIC_HOOKED.play()
         elif not self.rect.collidepoint(pg.mouse.get_pos()):
             self.hovered = False
 
-        # if the button is hovered, display the reduced text99
+        # if the button is hovered, display the reduced text
         if self.hovered:
             surface.blit(self.text[1], (self.rect.x + self.shift[0], self.rect.y + self.shift[1]))
         else:

@@ -14,6 +14,7 @@ def menu(screen: pg.display):
             if event.type == pg.MOUSEBUTTONUP:
                 # if you click on the start button, we start the game
                 if start_button.rect.collidepoint(event.pos):
+                    constants.MUSIC_CLICK.play()
                     return True
 
                 # if you click on the exit button, we end the game
@@ -21,7 +22,9 @@ def menu(screen: pg.display):
                     return False
 
                 elif statistics_button.rect.collidepoint(event.pos):
+                    constants.MUSIC_CLICK.play()
                     statistics_window.statistics_window(screen)
+
         # show fon
         screen.fill(constants.SCREEN_FILL)
 
@@ -58,27 +61,27 @@ exit_in_pause = Button(constants.CORDS_EXIT_IN_MENU_BUTTON,
 button_left = Button(constants.CORDS_BUTTON_LEFT,
                      '←', (11, 3), size_button=constants.BUTTON_CONTROL_SIZE,
                      font_normal=constants.TEXT_FONT_CONTROL.render,
-                     font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+                     font_min_text=constants.TEXT_FONT_CONTROL_MIN.render, music=False)
 
 button_down = Button(constants.CORDS_BUTTON_DOWN,
                      '↓', (25, 0), size_button=constants.BUTTON_CONTROL_SIZE,
                      font_normal=constants.TEXT_FONT_CONTROL.render,
-                     font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+                     font_min_text=constants.TEXT_FONT_CONTROL_MIN.render, music=False)
 
 button_right = Button(constants.CORDS_BUTTON_RIGHT,
                       '→', (11, 3), size_button=constants.BUTTON_CONTROL_SIZE,
                       font_normal=constants.TEXT_FONT_CONTROL.render,
-                      font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+                      font_min_text=constants.TEXT_FONT_CONTROL_MIN.render, music=False)
 
 button_rotate = Button(constants.CORDS_BUTTON_ROTATE,
                        'r', (30, 5), size_button=constants.BUTTON_CONTROL_SIZE,
                        font_normal=constants.TEXT_FONT_CONTROL.render,
-                       font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+                       font_min_text=constants.TEXT_FONT_CONTROL_MIN.render, music=False)
 
 button_pause = Button(constants.CORDS_BUTTON_PAUSE,
                       '||', (27, 1), size_button=constants.BUTTON_CONTROL_SIZE,
                       font_normal=constants.TEXT_FONT_CONTROL.render,
-                      font_min_text=constants.TEXT_FONT_CONTROL_MIN.render)
+                      font_min_text=constants.TEXT_FONT_CONTROL_MIN.render, music=False)
 
 # create inscriptions
 name_game_text = constants.BIG_TEXT_FONT.render('Tetris', True, (255, 255, 255))
