@@ -4,6 +4,7 @@ import pygame as pg
 
 
 def load_image(name, colorkey=None, transforms=None):
+    """image upload functions"""
     fullname = os.path.join('data/image', name)
 
     if not os.path.isfile(fullname):
@@ -23,17 +24,3 @@ def load_image(name, colorkey=None, transforms=None):
         image = pg.transform.scale(image, transforms)
     return image
 
-
-def cut_sheet(list_sheet, count_sprites) -> []:
-    url = "data/image/"
-    frames = []
-
-    sheet = load_image(f'{list_sheet}', colorkey=-1)
-    rect = pg.Rect(0, 0, sheet.get_width() // count_sprites, sheet.get_height())
-
-    for j in range(count_sprites):
-        rect = pg.Rect(0, 0, sheet.get_width() // count_sprites, sheet.get_height())
-
-        frame_location = (rect.w * j, 0)
-        frames.append(sheet.subsurface(pg.Rect(frame_location, rect.size)))
-    return frames

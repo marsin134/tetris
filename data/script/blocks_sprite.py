@@ -4,20 +4,20 @@ from copy import deepcopy
 import ctypes
 import os
 
-# Загрузка DLL
+# DLL Download
 dll_path = os.path.join(os.path.dirname(__file__), "asm", "clear_map.dll")
 dll = ctypes.CDLL(dll_path)
 
-# Указание типов аргументов и возвращаемого значения для каждой функции
+# Specifying the argument types and return value for each function
 dll.clear_map.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int]
 dll.clear_map.restype = None
 
 dll.update_shape_positions.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_int, ctypes.c_int]
 dll.update_shape_positions.restype = None
 
-# Указываем типы аргументов и возвращаемого значения для функции scoring_points_asm
+# Specify the argument and return types for the scoring_points_asm function
 dll.scoring_points.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
-dll.scoring_points.restype = ctypes.c_int  # Указываем тип возвращаемого значения как int
+dll.scoring_points.restype = ctypes.c_int  # Specify the return type as int
 
 map_block = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -146,11 +146,7 @@ class Figure:
         self.shapes = deepcopy(hash_block_cords[self.block_type])
         self.update_shape_positions()
         self.blocks = self.get_blocks()
-
-        # Check game over condition
-        if self.check_collision(self.blocks):
-            # Game over logic here
-            pass
+        self.game_over = False
 
         self.update_map()
 
@@ -264,6 +260,8 @@ class Figure:
     def move_down(self):
         """Move figure down, return False if stuck"""
         if not self.can_move:
+            if self.y == 0:
+                self.game_over = True
             self.stop_figure = True
 
         return self.try_move(dy=1)
@@ -325,9 +323,11 @@ def rect_figure(cords: (), block_type: int, screen: pg.display):
         pg.draw.rect(screen, hash_block_color[block_type], rect, width=0)
 
 
-def calculating_speed_index(points: int) -> int:
+def calculating_speed_index(points: int, speed: int) -> int:
     if points >= 2700:
         return 9
+    if points // 300 < speed:
+        return speed
 
     return points // 300
 

@@ -1,5 +1,1 @@
 name:points
-b:12
-l:10
-c:1
-No_Name:1

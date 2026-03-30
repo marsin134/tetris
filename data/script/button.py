@@ -14,18 +14,24 @@ class Button(pg.sprite.Sprite):
         self.rect.x = pos[0]
         self.rect.y = pos[1]
 
+        # two fonts: one regular, the other reduced for clicking on the button
         self.text = [font_normal(text, 1, pg.Color(color)),
                      font_min_text(text, 1, pg.Color(color))]
         self.shift = shift
         self.hovered = False
 
     def update(self, surface):
+        """update button"""
+
         surface.blit(self.image, self.rect)
+
+        # if the cursor is on the button, change the flag
         if self.rect.collidepoint(pg.mouse.get_pos()) and not self.hovered:
             self.hovered = True
         elif not self.rect.collidepoint(pg.mouse.get_pos()):
             self.hovered = False
 
+        # if the button is hovered, display the reduced text99
         if self.hovered:
             surface.blit(self.text[1], (self.rect.x + self.shift[0], self.rect.y + self.shift[1]))
         else:

@@ -1,11 +1,12 @@
 import pygame as pg
-
-import test
 from data.script import visual, constants, blocks_sprite, menu, statistics_window
 from random import randint
 
 
 def game(screen: pg.display):
+    """Tetris game function"""
+
+    # setting the basic values
     blocks_sprite.clear_map()
 
     block_type = randint(2, 8)
@@ -13,7 +14,7 @@ def game(screen: pg.display):
     block_type = randint(2, 8)
 
     points = 0
-    speed_index = points // 300
+    speed_index = int(statistics_window.read_file(constants.USER_TXT)[1].split(":")[2]) - 1
     lines = 0
     cooldown = constants.DICT_SPEED[speed_index]
 
@@ -22,14 +23,14 @@ def game(screen: pg.display):
     pause = False
 
     while True:
-        for event in pg.event.get():
+        for event in pg.event.get():  # processing keyboard and mouse events
             if event.type == pg.QUIT:
                 return False
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     pause = not pause
 
-                if not pause:
+                if not pause and not figure.game_over:
                     if event.key == pg.K_UP:
                         figure.rotate()
 
@@ -59,22 +60,29 @@ def game(screen: pg.display):
                     if menu.return_button_in_pause.rect.collidepoint(event.pos):
                         pause = False
                     elif menu.exit_in_pause.rect.collidepoint(event.pos):
+                        statistics_window.update_user_points(points)
+                        statistics_window.write_statistics()
                         return True
 
+        # displaying the playing field
         visual.field_rendering(screen, points, speed_index, lines, block_type)
 
-        if not pause:
+        # if the game is over, notify the user
+        if figure.game_over:
+            screen.blit(constants.TEXT_GAME_OVER, constants.CORDS_GAME_OVER)
+            screen.blit(constants.TEXT_PRESS_ESC, constants.CORDS_PRESS_ESC)
+
+        elif not pause:
             if pg.time.get_ticks() - update_time > cooldown:
                 figure.move_down()
                 update_time = pg.time.get_ticks()
 
-            if figure.stop_figure:
+            if figure.stop_figure and not figure.game_over:
                 line_count = blocks_sprite.scoring_points()
                 lines += line_count
                 points += constants.POINTS_PER_LINE[line_count] * (speed_index + 1)
-                speed_index = blocks_sprite.calculating_speed_index(points)
+                speed_index = blocks_sprite.calculating_speed_index(points, speed_index)
                 cooldown = constants.DICT_SPEED[speed_index]
-
                 figure = blocks_sprite.Figure(block_type)
                 block_type = randint(2, 8)
 
@@ -94,12 +102,10 @@ if __name__ == '__main__':
     clock = pg.time.Clock()
     screen = constants.SCREEN
 
-    running = statistics_window.statistics_window(screen)
-    # running = menu.menu(screen)
+    running = menu.menu(screen)
     while running:
         running = exit_in_menu_flag = game(screen)
         if exit_in_menu_flag:
             running = menu.menu(screen)
 
     pg.quit()
-

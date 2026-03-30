@@ -4,6 +4,7 @@ from .button import Button
 
 
 def statistics_window(screen: pg.display):
+    """a window that displays statistics"""
     lines = [elem.replace("\n", "").split(':') for elem in read_file(constants.STATISTICS_TXT)]
 
     user = read_file(constants.USER_TXT)[1].split(':')
@@ -23,6 +24,7 @@ def statistics_window(screen: pg.display):
 
     last_point_text = constants.TEXT_FONT.render(f"Last point: {user[1]}", True, (255, 255, 255))
 
+    # creating table cells
     cells = []
     for i in range(len(statistics_user_name_text)):
         line_cell = []
@@ -31,6 +33,7 @@ def statistics_window(screen: pg.display):
             line_cell.append(pg.Rect(cell[0], cell[1] + cell[3] * i, cell[2], cell[3]))
         cells.append(line_cell)
 
+    # basic values for the letter writing window
     active_write = False
     input_box = pg.Rect(constants.INPUT_BOX_RECT)
     color_inactive = constants.INPUT_BOX_CLOR_INACTIVE
@@ -46,6 +49,7 @@ def statistics_window(screen: pg.display):
                 running = False
 
             if event.type == pg.MOUSEBUTTONUP:
+                # we change the speed using the buttons
                 if button_left.rect.collidepoint(event.pos) and int(user[2]) - 1 >= 1:
                     user[2] = str(int(user[2]) - 1)
                     user_speed_text = constants.TEXT_FONT.render(user[2], True, (255, 255, 255))
@@ -56,6 +60,7 @@ def statistics_window(screen: pg.display):
                     user_speed_text = constants.TEXT_FONT.render(user[2], True, (255, 255, 255))
                     update_user_speed(int(user[2]))
 
+                # We go out the window
                 elif button_exit.rect.collidepoint(event.pos):
                     return
 
@@ -69,20 +74,18 @@ def statistics_window(screen: pg.display):
 
                 color = color_active if active_write else color_inactive
 
-            if event.type == pg.KEYDOWN:
-                if active_write:
-                    if event.key == pg.K_BACKSPACE:
-                        text = text[:-1]
-                    elif len(text) <= 7:
-                        text += event.unicode
-
-                elif button_exit.rect.collidepoint(event.pos):
-                    return
+            # writing letters to enter the username
+            if event.type == pg.KEYDOWN and active_write:
+                if event.key == pg.K_BACKSPACE:
+                    text = text[:-1]
+                elif len(text) <= 7:
+                    text += event.unicode
 
         txt_surface = constants.TEXT_FONT_USERNAME.render(text, True, color)
 
         screen.fill(constants.SCREEN_FILL)
 
+        # displaying the text
         screen.blit(icon_image, constants.ICON_CORDS)
         screen.blit(user_name_text, constants.NAME_CORDS)
         screen.blit(speed_text, constants.SPEED_CORDS_WORD)
@@ -94,6 +97,7 @@ def statistics_window(screen: pg.display):
         # Blit the input_box rect.
         pg.draw.rect(screen, color, input_box, 2)
 
+        # displaying the statistics table
         for i, line in enumerate(cells):
             for cell in line:
                 pg.draw.rect(screen, (255, 255, 255), cell, width=1)
@@ -110,12 +114,14 @@ def statistics_window(screen: pg.display):
 
 
 def read_file(filename: str) -> []:
+    """reading a file"""
     with open(f"{constants.URL_TXT_FILE}{filename}", "r") as file:
         return file.readlines()
 
 
 def write_statistics():
-    user_statistic = read_file(constants.USER_TXT)[1].replace("\n", "")
+    """record of sorted statistics, including the current user's last game"""
+    user_statistic = ":".join(read_file(constants.USER_TXT)[1].replace("\n", "").split(":")[:2])
     statistic_lines = read_file(constants.STATISTICS_TXT)
     heading = statistic_lines[0]
     records = [elem.replace("\n", "") for elem in statistic_lines[1:]]
@@ -123,7 +129,7 @@ def write_statistics():
 
     for i in range(len(records)):
         records[i] = records[i].split(":")
-    records = sorted(records, key=lambda x: x[1], reverse=True)
+    records = sorted(records, key=lambda x: int(x[1]), reverse=True)
 
     with open(f"{constants.URL_TXT_FILE}{constants.STATISTICS_TXT}", "w") as file:
         file.write(heading)
@@ -132,13 +138,16 @@ def write_statistics():
 
 
 def update_user_name(user_name: str):
+    """writing a new username to a file"""
     line = read_file(constants.USER_TXT)
     with open(f"{constants.URL_TXT_FILE}last_user.txt", "w") as file:
         file.write(line[0])
-        file.write(f"{user_name}:0:1")
+        user = line[1].split(':')
+        file.write(f"{user_name}:0:{user[2]}")
 
 
 def update_user_points(points: int):
+    """writing a new points to a file"""
     line = read_file(constants.USER_TXT)
     with open(f"{constants.URL_TXT_FILE}{constants.USER_TXT}", "w") as file:
         file.write(line[0])
@@ -147,6 +156,7 @@ def update_user_points(points: int):
 
 
 def update_user_speed(speed: int):
+    """writing a new speed to a file"""
     line = read_file(constants.USER_TXT)
     with open(f"{constants.URL_TXT_FILE}{constants.USER_TXT}", "w") as file:
         file.write(line[0])
@@ -154,6 +164,7 @@ def update_user_speed(speed: int):
         file.write(f"{user[0]}:{user[1]}:{speed}")
 
 
+# creating things necessary for the window interface
 icon_image = visual.load_image("icon.png", transforms=constants.ICON_SIZE)
 speed_text = constants.TEXT_FONT.render("Speed", True, (255, 255, 255))
 button_left = Button(constants.CORDS_SPEED_BUTTON_LEFT,

@@ -1,5 +1,5 @@
 import pygame as pg
-from . import constants
+from . import constants, statistics_window
 from .button import Button
 
 
@@ -19,6 +19,9 @@ def menu(screen: pg.display):
                 # if you click on the exit button, we end the game
                 elif exit_in_menu.rect.collidepoint(event.pos):
                     return False
+
+                elif statistics_button.rect.collidepoint(event.pos):
+                    statistics_window.statistics_window(screen)
         # show fon
         screen.fill(constants.SCREEN_FILL)
 
@@ -32,9 +35,6 @@ def menu(screen: pg.display):
 # music_click = pygame.mixer.Sound('data/music/data_music_click_m.wav')
 # music_fon_menu = pygame.mixer.Sound('data/music/Oklou_Casey_MQ_-_Lurk.mp3')
 # music_hooked = pygame.mixer.Sound('data/music/data_music_hooked_m.wav')
-
-# create fon
-# fon = pygame.transform.scale(visual.load_image('fons/fon_menu.png'), (CONST.SCREEN_WIDTH, CONST.SCREEN_HEIGHT))
 
 # create button
 start_button = Button(constants.CORDS_START_BUTTON,
@@ -99,7 +99,3 @@ for button in button_in_pause:
     button_group_pause.add(button)
 for button in button_control:
     button_group_control.add(button)
-
-# purchase_sound = pygame.mixer.Sound('data/music/buyTrue.mp3')
-# purchase_cancelled_sound = pygame.mixer.Sound('data/music/buyFalse.mp3')
-# mem_sound = pygame.mixer.Sound('data/music/the sound for Easter eggs.mp3')
