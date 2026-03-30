@@ -1,5 +1,3 @@
-import os
-import sys
 import pygame as pg
 from . import constants
 from . import blocks_sprite

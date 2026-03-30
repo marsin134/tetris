@@ -1,10 +1,8 @@
 import pygame as pg
+
+import test
 from data.script import visual, constants, blocks_sprite, menu, statistics_window
 from random import randint
-
-clock = pg.time.Clock()
-
-screen = constants.SCREEN
 
 
 def game(screen: pg.display):
@@ -92,8 +90,16 @@ def game(screen: pg.display):
         clock.tick(constants.FPS)
 
 
-running = statistics_window.statistics_window(screen)
-while running:
-    running = exit_in_menu_flag = game(screen)
-    if exit_in_menu_flag:
-        running = menu.menu(screen)
+if __name__ == '__main__':
+    clock = pg.time.Clock()
+    screen = constants.SCREEN
+
+    running = statistics_window.statistics_window(screen)
+    # running = menu.menu(screen)
+    while running:
+        running = exit_in_menu_flag = game(screen)
+        if exit_in_menu_flag:
+            running = menu.menu(screen)
+
+    pg.quit()
+
